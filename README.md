@@ -1,53 +1,78 @@
-# SRCNN
+# SRCNN-Pytorch
 
-<hr/>
+A PyTorch implementation of Super-Resolution Convolutional Neural Network (SRCNN) from scratch, with support for both MSE and Perceptual Loss training.
 
-### Introduction
-This repository is part of CS7180 Advanced Perception course at Northeastern University. This is Assignment-1, Image Sharpening aimed at exploring Super Resolution techniques. We implement SRCNN in pytorch from scratch and try to swap the MSE loss with perceptual loss.
+![Super Resolution Output](https://i.ibb.co/D94qm9s/1.gif)
 
-![Perceptual Loss](https://i.ibb.co/D94qm9s/1.gif)
+## Overview
 
-<hr/>
+This project implements the SRCNN architecture for single-image super-resolution. The network learns an end-to-end mapping from low-resolution to high-resolution images using three convolutional layers: patch extraction, non-linear mapping, and reconstruction. A perceptual loss variant using VGG19 feature matching is also implemented as an alternative to standard MSE loss.
 
-### Some random outputs:
+## Architecture
 
+| Layer | Operation | Kernel | Channels |
+|-------|-----------|--------|----------|
+| 1 | Conv2D + ReLU | 9×9 | 3 → 64 |
+| 2 | Conv2D + ReLU | 1×1 | 64 → 32 |
+| 3 | Conv2D | 5×5 | 32 → 3 |
 
+The perceptual loss extracts features from VGG19 `relu2_2` and combines feature-level MSE with pixel-level MSE using a weighted sum.
 
-### Training on Div2k
+## Tech Stack
 
-Follow these steps to train on Div2k dataset.
+`Python` · `PyTorch` · `TorchVision` · `TensorBoard` · `scikit-image`
 
-```
-git clone https://github.com/prajapatisarvesh/SRCNN-Pytorch.git # Clone this repo
+## Getting Started
+
+```bash
+git clone https://github.com/pathal-r/SRCNN-Pytorch.git
 cd SRCNN-Pytorch
+pip install -r requirements.txt
+```
+
+### Download Dataset
+
+```bash
 cd utils
-### Download the dataset and prepare the CSV
-python3 div2k_downloader.py
+python div2k_downloader.py
 cd ..
-python3 train.py
 ```
 
-This should start training, tensorboard is enabled, and checkpoints are being saved after every epoch. Argument Parsing is one thing we want to add some point in time.
+### Train
 
-<hr/>
-
-### Testing on Div2k
-
-Some baseline checkpoints are provided with this model, these are our baselines, and you can test them with color images of any dimension. 
-
-```
-cd SRCNN-Pytorch
-python3 test.py # This should save output in output dir.
+```bash
+python train.py
 ```
 
-<hr/>
+TensorBoard logging and checkpoint saving are enabled by default.
 
-### Training visulaization on Tensorboard
+### Test
 
-![Current Loss](figures/CLoss_TB.png) ![Loss](figures/Loss_TB.png)
+```bash
+python test.py
+```
 
-</hr>
+Output images are saved to the `output/` directory.
 
-### Acknoledgement
+## Training Visualization
 
-Thanks to this amazing repository that taught us some good practices to work with Pytorch -- [Pytorch-Template](https://github.com/victoresque/pytorch-template). This repo will have lot's of improvement, we will keep updating this.
+| Current Loss | Epoch Loss |
+|:---:|:---:|
+| ![Current Loss](figures/CLoss_TB.png) | ![Loss](figures/Loss_TB.png) |
+
+## Project Structure
+
+```
+SRCNN-Pytorch/
+├── model/          # SRCNN architecture and loss functions
+├── base/           # Base model and data loader classes
+├── data_loader/    # Div2k dataset loader
+├── utils/          # Dataset download utilities
+├── baseline/       # MSE and perceptual loss baselines
+├── train.py        # Training script
+└── test.py         # Inference script
+```
+
+## License
+
+See [LICENSE](LICENSE) for details.
